@@ -993,6 +993,9 @@ console.log("Response keys:", Object.keys(data));
         errorPanel.hidden = false;
         errorText.textContent = error.message;
         console.error(error);
+        console.error("ACTUAL ERROR:", error);
+console.error("ERROR NAME:", error.name);
+console.error("ERROR MESSAGE:", error.message);
 
       } finally {
         clearTimeout(timeoutId);
