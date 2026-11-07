@@ -856,309 +856,423 @@
   </footer>
 
   <script>
-  'use strict';
+  
+'use strict';
 
-    // FastAPI backend (Render)
-    const API_BASE = "https://learncheck.onrender.com";
-    const API = `${API_BASE}/quiz`;
+// FastAPI backend hosted on Render
+const API_BASE = "https://learncheck.onrender.com";
+const API = `${API_BASE}/quiz`;
 
-    // Wake up the Render server as soon as the page loads (hides cold-start delay)
-    fetch(`${API_BASE}/`).catch(() => { });
+// Quiz data
+let questions = [];
+let currentQuestion = 0;
+let score = 0;
+let answered = false;
 
-    // Quiz data
-    let questions = [];
-    let currentQuestion = 0;
-    let score = 0;
-    let answered = false;
+// Student details
+let studentData = {};
 
-    // Student details for the current quiz
-    let studentData = {};
+// DOM elements
+const $ = (id) => document.getElementById(id);
 
-    // DOM elements
-    const $ = (id) => document.getElementById(id);
+const studentPanel = $('student-panel');
+const studentForm = $('student-form');
+const quizForm = $('quiz-form');
 
-    const studentPanel = $('student-panel');
-    const studentForm = $('student-form');
-    const quizForm = $('quiz-form');
+const questionElement = $('question');
+const optionsElement = $('options');
+const messageElement = $('message');
 
-    const questionElement = $('question');
-    const optionsElement = $('options');
-    const messageElement = $('message');
+const submitBtn = $('submit-btn');
+const nextBtn = $('next-btn');
 
-    const submitBtn = $('submit-btn');
-    const nextBtn = $('next-btn');
+const resultPanel = $('result-panel');
+const resultSummary = $('result-summary');
 
-    const resultPanel = $('result-panel');
-    const resultSummary = $('result-summary');
+const errorPanel = $('error-panel');
+const errorText = $('error-text');
+const retryBtn = $('retry-btn');
 
-    const errorPanel = $('error-panel');
-    const errorText = $('error-text');
-    const retryBtn = $('retry-btn');
+const progressText = $('progress-text');
+const scoreText = $('score-text');
+const progressBar = $('progress-bar');
 
-    const progressText = $('progress-text');
-    const scoreText = $('score-text');
-    const progressBar = $('progress-bar');
+// Wake up Render when the page loads
+fetch(`${API_BASE}/`)
+    .then(response => {
+        console.log("Backend health status:", response.status);
+    })
+    .catch(error => {
+        console.warn("Backend wake-up request:", error.message);
+    });
 
 
-    // Generate quiz
-    studentForm.addEventListener('submit', async function (e) {
-      e.preventDefault();
+// =====================================
+// GENERATE QUIZ
+// =====================================
 
-      // Collect student details
-      studentData = {
+studentForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    studentData = {
         name: $('student-name').value.trim(),
         age: Number($('student-age').value),
         gender: $('student-gender').value,
         field: $('student-field').value.trim(),
         difficulty: $('student-difficulty').value
-      };
+    };
 
-      // Basic validation before calling the server
-      if (!studentData.name || !studentData.field || !Number.isInteger(studentData.age)) {
+    if (
+        !studentData.name ||
+        !studentData.field ||
+        !Number.isInteger(studentData.age) ||
+        studentData.age < 5 ||
+        studentData.age > 100
+    ) {
         errorPanel.hidden = false;
-        errorText.textContent = "Please fill in all fields with valid values.";
+        errorText.textContent = "Please enter valid details in all fields.";
         return;
-      }
+    }
 
-      const generateBtn = studentForm.querySelector('button');
-      generateBtn.disabled = true;
-      generateBtn.textContent = "Generating Quiz... (first load may take ~30s)";
-      errorPanel.hidden = true;
+    const generateBtn = studentForm.querySelector('button');
 
-      // Abort if the server takes too long
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 90000);
+    generateBtn.disabled = true;
+    generateBtn.textContent = "Generating Quiz... Please wait";
 
-      try {
-        let response;
+    errorPanel.hidden = true;
+    quizForm.hidden = true;
+    resultPanel.hidden = true;
 
-        try {
-          response = await fetch(API, {
+    const controller = new AbortController();
+
+    const timeoutId = setTimeout(() => {
+        controller.abort();
+    }, 90000);
+
+    try {
+
+        // Send student details to backend
+        const response = await fetch(API, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify(studentData),
             signal: controller.signal
-          });
-          console.log("Backend response status:", response.status);
+        });
 
-console.log(
-    "FULL BACKEND RESPONSE:",
-    JSON.stringify(data, null, 2)
-);
+        console.log("Backend response status:", response.status);
 
-console.log("Response keys:", Object.keys(data));
-        } catch (networkErr) {
-          throw new Error(
-            networkErr.name === "AbortError"
-              ? "The server took too long to respond. Please try again."
-              : "Can't reach the server. It may be waking up. Wait a few seconds and retry."
-          );
-        }
+        // Convert backend response into JSON
+        let data;
 
-        // The body may not be JSON (e.g. a Render 502 HTML page)
-        let data = null;
         try {
-          data = await response.json();
-        } catch {
-          /* ignore */
+            data = await response.json();
+        } catch (jsonError) {
+            throw new Error(
+                "The server returned an invalid response. Please try again."
+            );
         }
 
+        // Debugging information
+        console.log(
+            "FULL BACKEND RESPONSE:",
+            JSON.stringify(data, null, 2)
+        );
+
+        console.log("Response keys:", Object.keys(data || {}));
+
+        // Handle backend errors
         if (!response.ok) {
-          const detail = data && data.detail;
-          const message =
-            typeof detail === "string"
-              ? detail
-              : Array.isArray(detail)
-                ? detail.map(d => d.msg).join(", ")
-                : `Server error (${response.status}). Please try again.`;
-          throw new Error(message);
+            const detail = data && data.detail;
+
+            const errorMessage =
+                typeof detail === "string"
+                    ? detail
+                    : Array.isArray(detail)
+                        ? detail.map(item => item.msg).join(", ")
+                        : `Server error (${response.status}).`;
+
+            throw new Error(errorMessage);
         }
 
+        // Get questions
         questions = data && data.questions;
 
+        // Validate questions
         if (!Array.isArray(questions) || questions.length === 0) {
-          throw new Error("No questions were received. Please try again.");
+            console.error("Questions missing from response:", data);
+
+            throw new Error(
+                "The server responded, but no questions were received. Check the backend response."
+            );
         }
 
+        // Validate each question
+        questions.forEach((q, index) => {
+
+            if (
+                !q.question ||
+                !q.options ||
+                typeof q.options !== "object" ||
+                !q.correct_answer
+            ) {
+                throw new Error(
+                    `Question ${index + 1} has an invalid format.`
+                );
+            }
+
+            if (!q.options[q.correct_answer]) {
+                throw new Error(
+                    `Question ${index + 1} has an invalid correct answer.`
+                );
+            }
+        });
+
+        console.log("Quiz successfully generated:", questions);
+
+        // Reset quiz
         currentQuestion = 0;
         score = 0;
+        answered = false;
 
         studentPanel.hidden = true;
         errorPanel.hidden = true;
 
         loadQuestion();
 
-      } catch (error) {
-        studentPanel.hidden = false;
-        errorPanel.hidden = false;
-        errorText.textContent = error.message;
-        console.error(error);
-        console.error("ACTUAL ERROR:", error);
-console.error("ERROR NAME:", error.name);
-console.error("ERROR MESSAGE:", error.message);
+    } catch (error) {
 
-      } finally {
+        console.error("QUIZ GENERATION ERROR:", error);
+
+        studentPanel.hidden = false;
+        quizForm.hidden = true;
+        resultPanel.hidden = true;
+        errorPanel.hidden = false;
+
+        if (error.name === "AbortError") {
+            errorText.textContent =
+                "The server took too long to respond. Please try again.";
+        } else {
+            errorText.textContent = error.message;
+        }
+
+    } finally {
+
         clearTimeout(timeoutId);
+
         generateBtn.disabled = false;
         generateBtn.textContent = "Generate My Quiz →";
-      }
-    });
+    }
+});
 
 
-    // Display question
-    function loadQuestion() {
-      if (currentQuestion >= questions.length) {
+// =====================================
+// DISPLAY QUESTION
+// =====================================
+
+function loadQuestion() {
+
+    if (currentQuestion >= questions.length) {
         showResults();
         return;
-      }
+    }
 
-      answered = false;
+    answered = false;
 
-      const q = questions[currentQuestion];
+    const q = questions[currentQuestion];
 
-      questionElement.textContent = q.question;
-      optionsElement.innerHTML = "";
-      optionsElement.classList.remove("locked");
+    questionElement.textContent = q.question;
 
-      Object.entries(q.options).forEach(([key, value]) => {
+    optionsElement.innerHTML = "";
+    optionsElement.classList.remove("locked");
+
+    Object.entries(q.options).forEach(([key, value]) => {
+
         const label = document.createElement("label");
         label.className = "option";
         label.dataset.value = key;
 
         const input = document.createElement("input");
+
         input.type = "radio";
         input.name = "q";
         input.value = key;
 
         const span = document.createElement("span");
+
         span.textContent = `${key}. ${value}`;
 
         label.appendChild(input);
         label.appendChild(span);
 
         optionsElement.appendChild(label);
-      });
+    });
 
-      messageElement.textContent = "";
-      messageElement.className = "message";
+    messageElement.textContent = "";
+    messageElement.className = "message";
 
-      submitBtn.hidden = false;
-      nextBtn.hidden = true;
+    submitBtn.hidden = false;
+    nextBtn.hidden = true;
 
-      progressText.textContent =
+    progressText.textContent =
         `Question ${currentQuestion + 1} of ${questions.length}`;
 
-      scoreText.textContent = `Score: ${score}`;
+    scoreText.textContent = `Score: ${score}`;
 
-      const percent = (currentQuestion / questions.length) * 100;
+    const percent =
+        (currentQuestion / questions.length) * 100;
 
-      progressBar.style.width = `${percent}%`;
-      progressBar.parentElement.setAttribute("aria-valuenow", percent);
+    progressBar.style.width = `${percent}%`;
 
-      quizForm.hidden = false;
-      resultPanel.hidden = true;
+    progressBar.parentElement.setAttribute(
+        "aria-valuenow",
+        percent
+    );
 
-      const firstInput = optionsElement.querySelector("input");
-      if (firstInput) firstInput.focus();
+    quizForm.hidden = false;
+    resultPanel.hidden = true;
+
+    const firstInput = optionsElement.querySelector("input");
+
+    if (firstInput) {
+        firstInput.focus();
     }
+}
 
 
-    // Get selected answer
-    function getSelectedValue() {
-      const selected = quizForm.querySelector('input[name="q"]:checked');
-      return selected ? selected.value : null;
-    }
+// =====================================
+// GET SELECTED ANSWER
+// =====================================
+
+function getSelectedValue() {
+
+    const selected = quizForm.querySelector(
+        'input[name="q"]:checked'
+    );
+
+    return selected ? selected.value : null;
+}
 
 
-    // Check answer
-    quizForm.addEventListener("submit", function (e) {
-      e.preventDefault();
+// =====================================
+// CHECK ANSWER
+// =====================================
 
-      if (answered) return;
+quizForm.addEventListener("submit", function (e) {
 
-      const selectedAnswer = getSelectedValue();
+    e.preventDefault();
 
-      if (!selectedAnswer) {
-        messageElement.textContent = "Please select an answer first.";
+    if (answered) return;
+
+    const selectedAnswer = getSelectedValue();
+
+    if (!selectedAnswer) {
+
+        messageElement.textContent =
+            "Please select an answer first.";
+
         messageElement.className = "message bad";
+
         return;
-      }
+    }
 
-      const q = questions[currentQuestion];
-      const correct = selectedAnswer === q.correct_answer;
+    const q = questions[currentQuestion];
 
-      if (correct) score++;
+    const correct =
+        selectedAnswer === q.correct_answer;
 
-      answered = true;
+    if (correct) {
+        score++;
+    }
 
-      // Lock options and highlight answers
-      optionsElement.classList.add("locked");
+    answered = true;
 
-      optionsElement.querySelectorAll(".option").forEach(label => {
+    optionsElement.classList.add("locked");
+
+    optionsElement.querySelectorAll(".option").forEach(label => {
+
         const input = label.querySelector("input");
+
         input.disabled = true;
 
         if (label.dataset.value === q.correct_answer) {
-          label.classList.add("correct");
+            label.classList.add("correct");
         } else if (label.dataset.value === selectedAnswer) {
-          label.classList.add("wrong");
+            label.classList.add("wrong");
         }
-      });
+    });
 
-      // Show explanation
-      messageElement.textContent =
-        (correct ? "Correct! " : "Incorrect. ") + (q.explanation || "");
+    messageElement.textContent =
+        (correct ? "Correct! " : "Incorrect. ") +
+        (q.explanation || "");
 
-      messageElement.className = correct ? "message ok" : "message bad";
+    messageElement.className =
+        correct ? "message ok" : "message bad";
 
-      scoreText.textContent = `Score: ${score}`;
+    scoreText.textContent = `Score: ${score}`;
 
-      submitBtn.hidden = true;
-      nextBtn.hidden = false;
+    submitBtn.hidden = true;
+    nextBtn.hidden = false;
 
-      nextBtn.textContent =
+    nextBtn.textContent =
         currentQuestion === questions.length - 1
-          ? "See Results"
-          : "Next Question";
-    });
+            ? "See Results"
+            : "Next Question";
+});
 
 
-    // Next question
-    nextBtn.addEventListener("click", function () {
-      currentQuestion++;
-      loadQuestion();
-    });
+// =====================================
+// NEXT QUESTION
+// =====================================
+
+nextBtn.addEventListener("click", function () {
+
+    currentQuestion++;
+
+    loadQuestion();
+});
 
 
-    // Show final results and save them
-    function showResults() {
-      quizForm.hidden = true;
-      resultPanel.hidden = false;
+// =====================================
+// SHOW RESULTS
+// =====================================
 
-      const total = questions.length;
-      const percentage = Math.round((score / total) * 100);
+function showResults() {
 
-      progressText.textContent = "Quiz completed";
-      scoreText.textContent = `Score: ${score}`;
+    quizForm.hidden = true;
+    resultPanel.hidden = false;
 
-      progressBar.style.width = "100%";
-      progressBar.parentElement.setAttribute("aria-valuenow", 100);
+    const total = questions.length;
 
-      let verdict;
+    const percentage =
+        Math.round((score / total) * 100);
 
-      if (percentage >= 80) {
+    progressText.textContent = "Quiz completed";
+
+    scoreText.textContent = `Score: ${score}`;
+
+    progressBar.style.width = "100%";
+
+    progressBar.parentElement.setAttribute(
+        "aria-valuenow",
+        100
+    );
+
+    let verdict;
+
+    if (percentage >= 80) {
         verdict = "Excellent work!";
-      } else if (percentage >= 50) {
+    } else if (percentage >= 50) {
         verdict = "Good effort. Keep practising!";
-      } else {
+    } else {
         verdict = "Keep learning and try again!";
-      }
+    }
 
-      resultSummary.textContent =
+    resultSummary.textContent =
         `Well done, ${studentData.name}! You scored ${score}/${total} (${percentage}%). ${verdict}`;
 
-      // Create result object
-      const result = {
+    const result = {
         name: studentData.name,
         age: studentData.age,
         gender: studentData.gender,
@@ -1168,54 +1282,80 @@ console.error("ERROR MESSAGE:", error.message);
         total: total,
         percentage: percentage,
         date: new Date().toLocaleString()
-      };
+    };
 
-      // Save to localStorage (guarded: storage can be blocked or full)
-      try {
-        let history = JSON.parse(localStorage.getItem("quizResults") || "[]");
+    // Save results
+    try {
+
+        let history = JSON.parse(
+            localStorage.getItem("quizResults") || "[]"
+        );
 
         if (!Array.isArray(history)) {
-          history = [];
+            history = [];
         }
 
         history.push(result);
 
-        // Keep only the latest 20 results
         history = history.slice(-20);
 
-        localStorage.setItem("quizResults", JSON.stringify(history));
+        localStorage.setItem(
+            "quizResults",
+            JSON.stringify(history)
+        );
+
         console.log("Quiz result saved:", result);
 
-      } catch (error) {
-        console.error("Could not save quiz history:", error);
-      }
+    } catch (error) {
+
+        console.error(
+            "Could not save quiz history:",
+            error
+        );
     }
+}
 
 
-    // Restart quiz with same questions
-    $('restart-btn').addEventListener('click', function () {
-      currentQuestion = 0;
-      score = 0;
-      loadQuestion();
-    });
+// =====================================
+// RESTART QUIZ
+// =====================================
+
+$('restart-btn').addEventListener('click', function () {
+
+    currentQuestion = 0;
+    score = 0;
+
+    loadQuestion();
+});
 
 
-    // Retry if quiz generation fails
-    retryBtn.addEventListener('click', function () {
-      errorPanel.hidden = true;
-      studentPanel.hidden = false;
-    });
+// =====================================
+// RETRY GENERATION
+// =====================================
 
+retryBtn.addEventListener('click', function () {
 
-    // Update footer year
-    $('year').textContent = new Date().getFullYear();
-
-
-    // Initial state
-    quizForm.hidden = true;
-    resultPanel.hidden = true;
     errorPanel.hidden = true;
     studentPanel.hidden = false;
+});
+
+
+// =====================================
+// FOOTER YEAR
+// =====================================
+
+$('year').textContent = new Date().getFullYear();
+
+
+// =====================================
+// INITIAL STATE
+// =====================================
+
+quizForm.hidden = true;
+resultPanel.hidden = true;
+errorPanel.hidden = true;
+studentPanel.hidden = false;
+
     </script>
 
 </body>
