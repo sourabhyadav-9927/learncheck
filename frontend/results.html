@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101a35">
+  <title>My Results | LearnCheck</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy:#101a35;
+      --navy2:#1b2b50;
+      --blue:#4666e8;
+      --blue-dark:#3452ce;
+      --lavender:#eef0ff;
+      --text:#18213a;
+      --muted:#69738a;
+      --surface:#f7f8fc;
+      --border:#e8eaf2;
+      --white:#fff;
+      --shadow:0 8px 28px rgba(25,38,75,.045);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #f8f9fd;
+      color: var(--text);
+      font-family: "DM Sans", sans-serif;
+      line-height: 1.6;
+    }
+
+    button, a {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(1080px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    /* NAVIGATION */
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--navy);
+      color: #fff;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .nav-inner {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 22px;
+    }
+
+    .logo, .footer-logo {
+      font-family: "Manrope", sans-serif;
+      font-weight: 800;
+      letter-spacing: -1px;
+      font-size: 25px;
+      color: #fff;
+    }
+
+    .logo span, .footer-logo span {
+      color: #91a4ff;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 600;
+      color: #c7cde0;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: #fff;
+    }
+
+    .nav-cta {
+      padding: 10px 18px;
+      border-radius: 8px;
+      background: var(--blue);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    /* INTRO */
+
+    .intro {
+      padding: 48px 0 38px;
+      background:
+        radial-gradient(ellipse at 85% 15%, rgba(95,116,229,.13), transparent 35%),
+        linear-gradient(115deg,#f9faff,#f0f2ff);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 12px;
+      padding: 6px 13px;
+      border: 1px solid rgba(70,102,232,.13);
+      border-radius: 30px;
+      background: rgba(70,102,232,.09);
+      color: var(--blue-dark);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .9px;
+    }
+
+    h1, h2, h3, p {
+      overflow-wrap: break-word;
+    }
+
+    .intro h1 {
+      margin: 0;
+      color: var(--navy);
+      font: 800 clamp(32px,5vw,44px)/1.2 "Manrope",sans-serif;
+      letter-spacing: -1.7px;
+    }
+
+    .intro h1 span {
+      color: var(--blue);
+    }
+
+    .intro p {
+      max-width: 580px;
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    main {
+      flex: 1;
+      padding: 32px 0 70px;
+    }
+
+    /* SECTION HEADINGS */
+
+    .section-heading {
+      margin-bottom: 18px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      color: var(--navy);
+      font: 800 21px "Manrope",sans-serif;
+      letter-spacing: -.5px;
+    }
+
+    .section-heading p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* STATISTICS */
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4,minmax(0,1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card, .panel, .latest-card, .history-panel {
+      min-width: 0;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-card {
+      padding: 20px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .stat-value {
+      display: block;
+      margin-top: 8px;
+      color: var(--navy);
+      font: 800 29px/1.2 "Manrope",sans-serif;
+    }
+
+    .stat-note {
+      display: block;
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    /* DASHBOARD */
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    .panel {
+      padding: 23px;
+    }
+
+    .panel-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .panel-heading h2 {
+      margin: 0;
+      color: var(--navy);
+      font: 800 18px "Manrope",sans-serif;
+    }
+
+    .panel-heading p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .chart-label {
+      padding: 5px 10px;
+      border-radius: 20px;
+      background: var(--lavender);
+      color: var(--blue-dark);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .chart-container {
+      height: 250px;
+      width: 100%;
+      position: relative;
+    }
+
+    #performance-chart {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* TRACKERS */
+
+    .tracker-list {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .tracker-item {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .tracker-info {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .tracker-info span:last-child {
+      color: var(--blue-dark);
+    }
+
+    .tracker-track {
+      height: 9px;
+      overflow: hidden;
+      border-radius: 20px;
+      background: #edf0f8;
+    }
+
+    .tracker-fill {
+      height: 100%;
+      width: 0;
+      border-radius: 20px;
+      background: linear-gradient(90deg,var(--blue),#8b9cf5);
+      transition: width .5s ease;
+    }
+
+    .tracker-description {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .goal-card {
+      margin-top: 22px;
+      padding: 15px;
+      border: 1px solid #dfe3ff;
+      border-radius: 10px;
+      background: var(--lavender);
+    }
+
+    .goal-card strong {
+      color: var(--navy);
+      font-size: 13px;
+    }
+
+    .goal-card p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* LATEST RESULT */
+
+    .latest-card {
+      margin-bottom: 28px;
+      padding: 24px;
+    }
+
+    .latest-content {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .score-circle {
+      flex: 0 0 140px;
+      width: 140px;
+      height: 140px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 8px solid #dce2ff;
+      border-top-color: var(--blue);
+      border-right-color: var(--blue);
+      border-radius: 50%;
+      background: var(--lavender);
+    }
+
+    .score-circle strong {
+      color: var(--navy);
+      font: 800 34px/1.2 "Manrope",sans-serif;
+    }
+
+    .score-circle span {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .latest-info h3 {
+      margin: 0;
+      color: var(--navy);
+      font: 800 22px "Manrope",sans-serif;
+    }
+
+    .latest-info p {
+      margin: 5px 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .latest-info .result-message {
+      margin-top: 11px;
+      color: var(--blue-dark);
+      font-weight: 700;
+    }
+
+    /* BUTTONS */
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 11px;
+      margin-top: 22px;
+    }
+
+    .btn {
+      min-height: 43px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 17px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s,border-color .2s,transform .2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--blue-dark);
+    }
+
+    .btn-secondary {
+      background: #fff;
+      border-color: #d9deef;
+      color: var(--navy);
+    }
+
+    .btn-secondary:hover {
+      background: var(--lavender);
+      border-color: #c5cefa;
+    }
+
+    /* HISTORY */
+
+    .history-panel {
+      padding: 23px;
+    }
+
+    .history-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 17px;
+    }
+
+    .history-heading h2 {
+      margin: 0;
+      color: var(--navy);
+      font: 800 19px "Manrope",sans-serif;
+    }
+
+    .history-heading p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px;
+      background: #fbfbff;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+    }
+
+    .history-item strong {
+      display: block;
+      color: var(--navy);
+      font-size: 13px;
+    }
+
+    .history-item small {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .history-score {
+      color: var(--blue-dark);
+      font-size: 14px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .empty-state {
+      padding: 28px 14px;
+      border: 1px dashed #d8ddec;
+      border-radius: 10px;
+      background: #fbfbff;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    /* FOOTER */
+
+    footer {
+      margin-top: auto;
+      padding: 27px 0;
+      background: #0c142a;
+      color: #aeb8d0;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .footer-logo {
+      font-size: 21px;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 22px;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: #aeb8d0;
+    }
+
+    .copyright {
+      margin: 0;
+      color: #77829c;
+      font-size: 12px;
+    }
+
+    /* RESPONSIVE */
+
+    @media(max-width:850px) {
+      .stats-grid {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+      }
+
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media(max-width:600px) {
+      .container {
+        width: calc(100% - 30px);
+      }
+
+      .nav-inner {
+        min-height: 66px;
+        gap: 10px;
+      }
+
+      .logo {
+        font-size: 21px;
+      }
+
+      .nav-links {
+        gap: 12px;
+      }
+
+      .nav-links a {
+        font-size: 11px;
+      }
+
+      .nav-cta {
+        display: none;
+      }
+
+      .intro {
+        padding: 38px 0 29px;
+      }
+
+      .stats-grid {
+        gap: 10px;
+      }
+
+      .stat-card {
+        padding: 14px;
+      }
+
+      .stat-value {
+        font-size: 24px;
+      }
+
+      .panel,.history-panel,.latest-card {
+        padding: 17px;
+      }
+
+      .latest-content {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .actions .btn {
+        width: 100%;
+      }
+
+      .history-heading {
+        align-items: flex-start;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .footer-links {
+        justify-content: center;
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+      *,*::before,*::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+      }
+    }
+
+    /* PRINT */
+
+    @media print {
+      .navbar,footer,.intro,.stats-grid,.dashboard-grid,
+      .history-panel,.actions {
+        display: none !important;
+      }
+
+      body {
+        background: #fff;
+      }
+
+      main {
+        padding: 0;
+      }
+
+      .container {
+        width: 100%;
+      }
+
+      .latest-card {
+        margin: 20px 0;
+        box-shadow: none;
+        border: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVIGATION -->
+  <header class="navbar">
+    <div class="container nav-inner">
+
+      <a href="index.html" class="logo">
+        Learn<span>Check</span>
+      </a>
+
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="quiz.html">Take a Quiz</a>
+        <a href="results.html" class="active" aria-current="page">My Results</a>
+      </nav>
+
+      <a href="quiz.html" class="nav-cta">Take Quiz</a>
+
+    </div>
+  </header>
+
+  <!-- INTRO -->
+  <section class="intro">
+    <div class="container">
+
+      <div class="eyebrow">YOUR LEARNING DASHBOARD</div>
+
+      <h1>Track your <span>progress.</span></h1>
+
+      <p>
+        Understand your performance, monitor your improvement,
+        and keep moving towards your learning goals.
+      </p>
+
+    </div>
+  </section>
+
+  <main>
+    <div class="container">
+
+      <!-- STATISTICS -->
+      <section aria-labelledby="stats-title">
+
+        <div class="section-heading">
+          <h2 id="stats-title">Your Statistics</h2>
+          <p>A quick overview of your learning activity.</p>
+        </div>
+
+        <div class="stats-grid">
+
+          <article class="stat-card">
+            <span class="stat-label">Total Quizzes</span>
+            <strong class="stat-value" id="total-quizzes">0</strong>
+            <span class="stat-note">Completed attempts</span>
+          </article>
+
+          <article class="stat-card">
+            <span class="stat-label">Average Score</span>
+            <strong class="stat-value" id="average-score">0%</strong>
+            <span class="stat-note">Across all attempts</span>
+          </article>
+
+          <article class="stat-card">
+            <span class="stat-label">Best Score</span>
+            <strong class="stat-value" id="best-score">0%</strong>
+            <span class="stat-note">Your personal best</span>
+          </article>
+
+          <article class="stat-card">
+            <span class="stat-label">Correct Answers</span>
+            <strong class="stat-value" id="total-correct">0</strong>
+            <span class="stat-note">All attempts combined</span>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- GRAPH AND TRACKERS -->
+      <section class="dashboard-grid">
+
+        <!-- PERFORMANCE GRAPH -->
+        <div class="panel">
+
+          <div class="panel-heading">
+            <div>
+              <h2>Performance Overview</h2>
+              <p>Your scores across recent quiz attempts.</p>
+            </div>
+
+            <span class="chart-label">Score Trend</span>
+          </div>
+
+          <div class="chart-container">
+            <canvas
+              id="performance-chart"
+              aria-label="Graph showing quiz scores over time">
+            </canvas>
+          </div>
+
+        </div>
+
+        <!-- LEARNING TRACKERS -->
+        <div class="panel">
+
+          <div class="panel-heading">
+            <div>
+              <h2>Learning Trackers</h2>
+              <p>Track your progress towards your goals.</p>
+            </div>
+          </div>
+
+          <div class="tracker-list">
+
+            <div class="tracker-item">
+              <div class="tracker-info">
+                <span>Average Score</span>
+                <span id="average-label">0%</span>
+              </div>
+
+              <div class="tracker-track">
+                <div class="tracker-fill" id="average-tracker"></div>
+              </div>
+
+              <span class="tracker-description">
+                Your average performance across all quizzes.
+              </span>
+            </div>
+
+            <div class="tracker-item">
+              <div class="tracker-info">
+                <span>Best Score</span>
+                <span id="best-label">0%</span>
+              </div>
+
+              <div class="tracker-track">
+                <div class="tracker-fill" id="best-tracker"></div>
+              </div>
+
+              <span class="tracker-description">
+                Your highest percentage achieved.
+              </span>
+            </div>
+
+            <div class="tracker-item">
+              <div class="tracker-info">
+                <span>Quiz Completion Goal</span>
+                <span id="goal-label">0/10</span>
+              </div>
+
+              <div class="tracker-track">
+                <div class="tracker-fill" id="goal-tracker"></div>
+              </div>
+
+              <span class="tracker-description">
+                Complete 10 quizzes to reach this goal.
+              </span>
+            </div>
+
+          </div>
+
+          <div class="goal-card">
+            <strong>Keep improving!</strong>
+            <p id="goal-message">
+              Complete your first quiz to start tracking your progress.
+            </p>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- LATEST RESULT -->
+      <section class="latest-card">
+
+        <div class="section-heading">
+          <h2>Latest Quiz Result</h2>
+          <p>Your most recently completed quiz.</p>
+        </div>
+
+        <div class="latest-content">
+
+          <div class="score-circle">
+            <strong id="latest-percentage">0%</strong>
+            <span>YOUR SCORE</span>
+          </div>
+
+          <div class="latest-info">
+
+            <h3 id="performance-title">Keep Learning!</h3>
+
+            <p id="latest-date">No quiz completed yet.</p>
+
+            <p id="latest-score"></p>
+
+            <p class="result-message" id="performance-message"></p>
+
+          </div>
+
+        </div>
+
+        <div class="actions">
+
+          <button class="btn btn-primary" id="download-btn">
+            ↓ Download Result (PDF)
+          </button>
+
+          <a href="quiz.html" class="btn btn-secondary">
+            Take Another Quiz
+          </a>
+
+          <a href="index.html" class="btn btn-secondary">
+            Back to Home
+          </a>
+
+        </div>
+
+      </section>
+
+      <!-- QUIZ HISTORY -->
+      <section class="history-panel">
+
+        <div class="history-heading">
+
+          <div>
+            <h2>Quiz History</h2>
+            <p>Review your previous attempts.</p>
+          </div>
+
+          <button class="btn btn-secondary" id="csv-btn">
+            ↓ Download History (CSV)
+          </button>
+
+        </div>
+
+        <div class="history-list" id="history-list"></div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container footer-inner">
+
+      <a href="index.html" class="footer-logo">
+        Learn<span>Check</span>
+      </a>
+
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="quiz.html">Take a Quiz</a>
+        <a href="results.html">My Results</a>
+      </div>
+
+      <p class="copyright">
+        © <span id="year"></span> LearnCheck. All rights reserved.
+      </p>
+
+    </div>
+  </footer>
+
+  <!-- JAVASCRIPT -->
+  <script>
+    "use strict";
+
+    // GET ELEMENTS BY ID
+    function byId(id) {
+      return document.getElementById(id);
+    }
+
+    // READ QUIZ HISTORY
+    let history = [];
+
+    try {
+      const saved = JSON.parse(
+        localStorage.getItem("quizResults") || "[]"
+      );
+
+      if (Array.isArray(saved)) {
+        history = saved.filter(item =>
+          item &&
+          Number.isFinite(Number(item.score)) &&
+          Number.isFinite(Number(item.total)) &&
+          Number(item.total) > 0
+        );
+      }
+
+    } catch (error) {
+      console.error("Could not read quiz history:", error);
+    }
+
+    const latest = history.length
+      ? history[history.length - 1]
+      : null;
+
+    // CALCULATE PERCENTAGE
+    function percentageOf(result) {
+      if (
+        Number.isFinite(Number(result.percentage)) &&
+        result.percentage !== null &&
+        result.percentage !== ""
+      ) {
+        return Math.max(
+          0,
+          Math.min(100, Math.round(Number(result.percentage)))
+        );
+      }
+
+      return Math.round(
+        (Number(result.score) / Number(result.total)) * 100
+      );
+    }
+
+    // PERFORMANCE MESSAGE
+    function performanceText(percentage) {
+      if (percentage >= 90) return "Outstanding Performance!";
+      if (percentage >= 80) return "Excellent Work!";
+      if (percentage >= 60) return "Good Job!";
+      if (percentage >= 40) return "Keep Practising!";
+
+      return "Keep Learning!";
+    }
+
+    // FORMAT DATE
+    function formatDate(date) {
+      const parsed = new Date(date);
+
+      if (Number.isNaN(parsed.getTime())) {
+        return "Date unavailable";
+      }
+
+      return parsed.toLocaleString("en-IN", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    // DISPLAY STATISTICS
+    function displayStatistics() {
+      const count = history.length;
+
+      const percentages = history.map(percentageOf);
+
+      const correct = history.reduce(
+        (sum, result) => sum + Number(result.score),
+        0
+      );
+
+      const average = count
+        ? Math.round(
+            percentages.reduce((sum, value) => sum + value, 0) / count
+          )
+        : 0;
+
+      const best = count
+        ? Math.max(...percentages)
+        : 0;
+
+      byId("total-quizzes").textContent = count;
+      byId("average-score").textContent = average + "%";
+      byId("best-score").textContent = best + "%";
+      byId("total-correct").textContent = correct;
+
+      // Average tracker
+      byId("average-label").textContent = average + "%";
+      byId("average-tracker").style.width = average + "%";
+
+      // Best score tracker
+      byId("best-label").textContent = best + "%";
+      byId("best-tracker").style.width = best + "%";
+
+      // Quiz completion goal
+      const goal = 10;
+
+      byId("goal-label").textContent =
+        Math.min(count, goal) + "/" + goal;
+
+      byId("goal-tracker").style.width =
+        Math.min(100, count / goal * 100) + "%";
+
+      if (count === 0) {
+
+        byId("goal-message").textContent =
+          "Complete your first quiz to start tracking your progress.";
+
+      } else if (count >= goal) {
+
+        byId("goal-message").textContent =
+          "Congratulations! You completed your 10-quiz goal.";
+
+      } else {
+
+        byId("goal-message").textContent =
+          `You have completed ${count} of 10 quizzes. ${goal - count} more to reach your goal.`;
+      }
+    }
+
+    // DRAW PERFORMANCE GRAPH
+    function drawGraph() {
+      const canvas = byId("performance-chart");
+
+      if (!canvas) return;
+
+      const rect = canvas.getBoundingClientRect();
+
+      const width = Math.max(1, Math.floor(rect.width));
+      const height = Math.max(1, Math.floor(rect.height));
+
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+
+      const context = canvas.getContext("2d");
+
+      if (!context) return;
+
+      context.setTransform(dpr, 0, 0, dpr, 0, 0);
+      context.clearRect(0, 0, width, height);
+
+      const scores = history.slice(-10).map(percentageOf);
+
+      // No quiz data
+      if (scores.length === 0) {
+
+        context.fillStyle = "#69738a";
+        context.font = "13px DM Sans, sans-serif";
+        context.textAlign = "center";
+
+        context.fillText(
+          "Complete a quiz to see your performance graph.",
+          width / 2,
+          height / 2
+        );
+
+        return;
+      }
+
+      const left = 42;
+      const right = 14;
+      const top = 14;
+      const bottom = 30;
+
+      const graphWidth = Math.max(1, width - left - right);
+      const graphHeight = Math.max(1, height - top - bottom);
+
+      // Horizontal grid lines
+      context.font = "11px DM Sans, sans-serif";
+      context.textAlign = "right";
+      context.fillStyle = "#69738a";
+      context.strokeStyle = "#edf0f7";
+      context.lineWidth = 1;
+
+      [0, 25, 50, 75, 100].forEach(value => {
+
+        const y =
+          top + graphHeight - (value / 100) * graphHeight;
+
+        context.beginPath();
+        context.moveTo(left, y);
+        context.lineTo(width - right, y);
+        context.stroke();
+
+        context.fillText(value + "%", left - 9, y + 4);
+      });
+
+      // Calculate graph points
+      const points = scores.map((score, index) => ({
+        x: scores.length === 1
+          ? left + graphWidth / 2
+          : left + (index / (scores.length - 1)) * graphWidth,
+
+        y: top + graphHeight - (score / 100) * graphHeight
+      }));
+
+      // Draw filled graph area
+      if (points.length > 1) {
+
+        const fill = context.createLinearGradient(
+          0, top, 0, top + graphHeight
+        );
+
+        fill.addColorStop(0, "rgba(70,102,232,.20)");
+        fill.addColorStop(1, "rgba(70,102,232,.01)");
+
+        context.beginPath();
+        context.moveTo(points[0].x, top + graphHeight);
+
+        points.forEach(point => {
+          context.lineTo(point.x, point.y);
+        });
+
+        context.lineTo(
+          points[points.length - 1].x,
+          top + graphHeight
+        );
+
+        context.closePath();
+        context.fillStyle = fill;
+        context.fill();
+
+        // Draw graph line
+        context.beginPath();
+        context.moveTo(points[0].x, points[0].y);
+
+        points.slice(1).forEach(point => {
+          context.lineTo(point.x, point.y);
+        });
+
+        context.strokeStyle = "#4666e8";
+        context.lineWidth = 3;
+        context.lineJoin = "round";
+        context.lineCap = "round";
+        context.stroke();
+      }
+
+      // Draw graph points
+      points.forEach((point, index) => {
+
+        context.beginPath();
+        context.arc(point.x, point.y, 5, 0, Math.PI * 2);
+
+        context.fillStyle = "#fff";
+        context.fill();
+
+        context.strokeStyle = "#4666e8";
+        context.lineWidth = 2.5;
+        context.stroke();
+
+        context.fillStyle = "#69738a";
+        context.font = "10px DM Sans, sans-serif";
+        context.textAlign = "center";
+
+        context.fillText(
+          "Q" + (history.length - scores.length + index + 1),
+          point.x,
+          height - 8
+        );
+      });
+    }
+
+    // DISPLAY LATEST RESULT
+    function displayLatest() {
+
+      if (!latest) {
+
+        byId("latest-percentage").textContent = "0%";
+        byId("performance-title").textContent = "No quiz yet";
+
+        byId("latest-date").textContent =
+          "Complete your first quiz to see your result.";
+
+        byId("latest-score").textContent = "";
+
+        byId("performance-message").textContent =
+          "Your learning journey starts here!";
+
+        return;
+      }
+
+      const score = Number(latest.score);
+      const total = Number(latest.total);
+      const percentage = percentageOf(latest);
+
+      byId("latest-percentage").textContent =
+        percentage + "%";
+
+      byId("performance-title").textContent =
+        performanceText(percentage);
+
+      byId("latest-date").textContent =
+        "Completed on " + formatDate(latest.date);
+
+      byId("latest-score").textContent =
+        `Correct: ${score} | Wrong: ${Math.max(0, total - score)} | Total: ${total}`;
+
+      byId("performance-message").textContent =
+        percentage >= 80
+          ? "Great progress! Keep up the excellent work."
+          : "Every attempt is a chance to improve. Keep practising!";
+    }
+
+    // DISPLAY QUIZ HISTORY
+    function displayHistory() {
+
+      const list = byId("history-list");
+
+      list.replaceChildren();
+
+      if (history.length === 0) {
+
+        const empty = document.createElement("div");
+
+        empty.className = "empty-state";
+
+        empty.textContent =
+          "No quiz attempts yet. Take your first quiz to see your history.";
+
+        list.appendChild(empty);
+
+        return;
+      }
+
+      history.slice().reverse().forEach((result, index) => {
+
+        const item = document.createElement("div");
+        item.className = "history-item";
+
+        const details = document.createElement("div");
+
+        const title = document.createElement("strong");
+
+        title.textContent =
+          "Quiz Attempt " + (history.length - index);
+
+        const date = document.createElement("small");
+
+        date.textContent = formatDate(result.date);
+
+        details.append(title, date);
+
+        const score = document.createElement("span");
+
+        score.className = "history-score";
+
+        score.textContent =
+          `${Number(result.score)}/${Number(result.total)} · ${percentageOf(result)}%`;
+
+        item.append(details, score);
+
+        list.appendChild(item);
+      });
+    }
+
+    // DOWNLOAD RESULT AS PDF
+    function downloadLatestResult() {
+
+      if (!latest) {
+        alert("Complete a quiz before downloading your result.");
+        return;
+      }
+
+      const score = Number(latest.score);
+      const total = Number(latest.total);
+      const percentage = percentageOf(latest);
+      const wrong = Math.max(0, total - score);
+      const date = formatDate(latest.date);
+      const title = performanceText(percentage);
+
+      const reportWindow = window.open("", "_blank");
+
+      if (!reportWindow) {
+        alert("Please allow pop-ups for this website, then try again.");
+        return;
+      }
+
+      const reportDocument = reportWindow.document;
+
+      reportDocument.open();
+
+      reportDocument.write(`<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LearnCheck Quiz Result</title>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    padding: 35px;
+    color: #18213a;
+    max-width: 760px;
+    margin: auto;
+  }
+
+  .header {
+    padding: 24px;
+    color: #fff;
+    background: #101a35;
+    border-radius: 10px;
+  }
+
+  .header h1 {
+    margin: 0;
+  }
+
+  .report {
+    margin-top: 25px;
+    padding: 24px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+  }
+
+  .score {
+    margin: 22px 0;
+    padding: 22px;
+    color: #3452ce;
+    background: #eef0ff;
+    text-align: center;
+    border-radius: 8px;
+  }
+
+  .percentage {
+    font-size: 42px;
+    font-weight: bold;
+  }
+
+  @media print {
+    body {
+      padding: 0;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+  <div class="header">
+    <h1>LearnCheck</h1>
+    <p>QUIZ PERFORMANCE REPORT</p>
+  </div>
+
+  <div class="report">
+
+    <h2>Your Quiz Result</h2>
+
+    <p><b>Date:</b> ${date}</p>
+
+    <div class="score">
+      <div class="percentage">${percentage}%</div>
+      <h3>${title}</h3>
+    </div>
+
+    <h3>Performance Summary</h3>
+
+    <p>Correct Answers: ${score}</p>
+    <p>Wrong Answers: ${wrong}</p>
+    <p>Total Questions: ${total}</p>
+    <p>Percentage: ${percentage}%</p>
+
+  </div>
+
+<\/body>
+</html>`);
+
+      reportDocument.close();
+
+      reportWindow.focus();
+
+      reportWindow.onload = function () {
+        reportWindow.print();
+      };
+    }
+
+    // DOWNLOAD HISTORY AS CSV
+    function downloadHistoryCsv() {
+
+      if (history.length === 0) {
+        alert("No quiz history available to download.");
+        return;
+      }
+
+      const rows = [
+        ["Attempt", "Score", "Total Questions", "Percentage", "Date"]
+      ];
+
+      history.forEach((result, index) => {
+
+        rows.push([
+          index + 1,
+          result.score,
+          result.total,
+          percentageOf(result) + "%",
+          formatDate(result.date)
+        ]);
+
+      });
+
+      const csv = rows.map(row =>
+        row.map(value =>
+          '"' + String(value).replace(/"/g, '""') + '"'
+        ).join(",")
+      ).join("\r\n");
+
+      const blob = new Blob(
+        ["\uFEFF" + csv],
+        { type: "text/csv;charset=utf-8;" }
+      );
+
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = "LearnCheck_Quiz_History.csv";
+
+      document.body.appendChild(link);
+
+      link.click();
+
+      link.remove();
+
+      window.setTimeout(() => {
+        URL.revokeObjectURL(url);
+      }, 1000);
+    }
+
+    // BUTTON EVENTS
+    byId("download-btn").addEventListener(
+      "click",
+      downloadLatestResult
+    );
+
+    byId("csv-btn").addEventListener(
+      "click",
+      downloadHistoryCsv
+    );
+
+    // CURRENT YEAR
+    byId("year").textContent = new Date().getFullYear();
+
+    // INITIALIZE DASHBOARD
+    displayStatistics();
+    displayLatest();
+    displayHistory();
+    drawGraph();
+
+    // REDRAW GRAPH WHEN WINDOW RESIZES
+    let resizeTimer;
+
+    window.addEventListener("resize", () => {
+
+      window.clearTimeout(resizeTimer);
+
+      resizeTimer = window.setTimeout(drawGraph, 120);
+
+    });
+
+  </script>
+
+</body>
+</html>

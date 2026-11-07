@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Create a personalized AI-powered quiz with LearnCheck.">
+  <meta name="theme-color" content="#101a35">
+  <title>Quiz | LearnCheck</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy: #101a35;
+      --navy-light: #1b2b50;
+      --blue: #4666e8;
+      --blue-dark: #3452ce;
+      --lavender: #eef0ff;
+      --yellow: #f6d875;
+      --text: #18213a;
+      --muted: #69738a;
+      --white: #ffffff;
+      --surface: #f7f8fc;
+      --border: #e8eaf2;
+      --green: #16834a;
+      --green-bg: #e9f7ef;
+      --red: #c93636;
+      --red-bg: #fff0f0;
+      --shadow: 0 20px 60px rgba(25, 38, 75, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      color: var(--text);
+      background: #f8f9fd;
+      font-family: "DM Sans", sans-serif;
+      line-height: 1.6;
+    }
+
+    button, input, select { font: inherit; }
+    a { color: inherit; text-decoration: none; }
+    [hidden] { display: none !important; }
+
+    :focus-visible {
+      outline: 3px solid var(--yellow);
+      outline-offset: 3px;
+    }
+
+    .container {
+      width: min(1040px, calc(100% - 48px));
+      margin: 0 auto;
+    }
+
+    /* Navigation */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      color: white;
+      background: var(--navy);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .nav-inner {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .logo {
+      color: white;
+      font-family: "Manrope", sans-serif;
+      font-size: 25px;
+      font-weight: 800;
+      letter-spacing: -1.2px;
+      white-space: nowrap;
+    }
+
+    .logo span { color: #91a4ff; }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 34px;
+    }
+
+    .nav-links a {
+      color: #c7cde0;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: white; }
+
+    .nav-cta {
+      padding: 11px 21px;
+      color: white;
+      background: var(--blue);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .nav-cta:hover { background: #5b78f0; }
+
+    /* Introduction */
+    .page-intro {
+      padding: 55px 0 25px;
+      text-align: center;
+      background:
+        radial-gradient(ellipse at 85% 15%, rgba(95,116,229,.13), transparent 35%),
+        linear-gradient(115deg, #f9faff, #f0f2ff);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 13px;
+      padding: 7px 14px;
+      color: var(--blue-dark);
+      background: rgba(70,102,232,.09);
+      border: 1px solid rgba(70,102,232,.13);
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .9px;
+    }
+
+    .eyebrow-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--blue);
+    }
+
+    .page-intro h1 {
+      margin: 0;
+      color: var(--navy);
+      font-family: "Manrope", sans-serif;
+      font-size: clamp(32px, 5vw, 46px);
+      line-height: 1.2;
+      letter-spacing: -1.8px;
+    }
+
+    .page-intro h1 span { color: var(--blue); }
+
+    .page-intro p {
+      max-width: 580px;
+      margin: 13px auto 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    main {
+      flex: 1;
+      width: 100%;
+      padding: 28px 0 80px;
+    }
+
+    .quiz-container {
+      width: min(850px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: clamp(22px, 4vw, 42px);
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    /* Quiz header */
+    .quiz-header { margin-bottom: 28px; }
+
+    .quiz-header h2 {
+      margin: 0 0 5px;
+      color: var(--navy);
+      font-family: "Manrope", sans-serif;
+      font-size: 21px;
+    }
+
+    .quiz-header > p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .quiz-meta {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 24px 0 9px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    #score-text { color: var(--blue); }
+
+    .progress {
+      height: 8px;
+      overflow: hidden;
+      background: #e9ecf7;
+      border-radius: 20px;
+    }
+
+    .progress-bar {
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--blue), #8497f5);
+      border-radius: inherit;
+      transition: width .35s ease;
+    }
+
+    /* Student form */
+    #student-panel {
+      max-width: 650px;
+      margin: 0 auto;
+      padding: clamp(20px, 3vw, 30px);
+      background: #fbfbff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+
+    #student-panel h2 {
+      margin: 0 0 5px;
+      color: var(--navy);
+      font-family: "Manrope", sans-serif;
+      font-size: 23px;
+    }
+
+    .form-description {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    #student-form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 17px;
+      margin-top: 24px;
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .form-field label {
+      color: #35415c;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    #student-form input,
+    #student-form select {
+      width: 100%;
+      min-width: 0;
+      min-height: 49px;
+      padding: 11px 13px;
+      color: var(--text);
+      background: white;
+      border: 1px solid #dfe3ef;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    #student-form input:focus,
+    #student-form select:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(70,102,232,.12);
+    }
+
+    #student-form button { grid-column: 1 / -1; }
+
+    /* Questions */
+    .question-answer {
+      min-width: 0;
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+
+    .question-answer legend {
+      width: 100%;
+      margin-bottom: 22px;
+      padding: 0;
+      color: var(--navy);
+      font-family: "Manrope", sans-serif;
+      font-size: clamp(19px, 3vw, 25px);
+      font-weight: 800;
+      line-height: 1.4;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 13px;
+    }
+
+    .option {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      min-height: 62px;
+      padding: 16px;
+      color: var(--text);
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .option:hover {
+      border-color: #aebcf9;
+      background: #fafaff;
+    }
+
+    .option input {
+      flex: 0 0 auto;
+      width: 17px;
+      height: 17px;
+      margin: 3px 0 0;
+      accent-color: var(--blue);
+    }
+
+    .option span {
+      overflow-wrap: anywhere;
+      font-size: 14px;
+    }
+
+    .option:has(input:checked) {
+      border-color: var(--blue);
+      background: var(--lavender);
+    }
+
+    .option.correct {
+      color: #12633a;
+      background: var(--green-bg);
+      border-color: #69bd8b;
+    }
+
+    .option.wrong {
+      color: #9f2929;
+      background: var(--red-bg);
+      border-color: #e59a9a;
+    }
+
+    .options.locked .option { cursor: default; }
+
+    /* Feedback */
+    .message {
+      margin: 18px 0 0;
+      padding: 13px 15px;
+      border-radius: 9px;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.7;
+    }
+
+    .message:empty { display: none; }
+    .message.ok { color: #12633a; background: var(--green-bg); }
+    .message.bad { color: #9f2929; background: var(--red-bg); }
+
+    /* Buttons */
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 47px;
+      padding: 11px 21px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .btn:hover:not(:disabled) { transform: translateY(-1px); }
+    .btn-primary { color: white; background: var(--blue); }
+    .btn-primary:hover:not(:disabled) { background: var(--blue-dark); }
+
+    .btn-secondary {
+      color: var(--navy);
+      background: white;
+      border-color: #d9deef;
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: var(--lavender);
+      border-color: #c5cefa;
+    }
+
+    .btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    /* Results */
+    .result-panel {
+      padding: 22px 8px 8px;
+      text-align: center;
+    }
+
+    .result-panel h2 {
+      margin: 0;
+      color: var(--navy);
+      font-family: "Manrope", sans-serif;
+      font-size: clamp(26px, 4vw, 34px);
+    }
+
+    .result-summary {
+      max-width: 540px;
+      margin: 22px auto;
+      padding: 22px;
+      color: var(--navy);
+      background: var(--lavender);
+      border: 1px solid #dce1ff;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 600;
+      line-height: 1.8;
+    }
+
+    .result-panel .actions { justify-content: center; }
+
+    .error-panel {
+      margin-top: 20px;
+      padding: 20px;
+      background: var(--red-bg);
+      border: 1px solid #f0c4c4;
+      border-radius: 12px;
+    }
+
+    .error-panel h2 {
+      margin: 0 0 6px;
+      color: var(--red);
+      font-family: "Manrope", sans-serif;
+      font-size: 19px;
+    }
+
+    .error-panel p {
+      margin: 0 0 15px;
+      color: #7f2929;
+      font-size: 14px;
+    }
+
+    /* Footer */
+    footer {
+      margin-top: auto;
+      padding: 30px 0;
+      color: #aeb8d0;
+      background: #0c142a;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .footer-logo {
+      color: white;
+      font-family: "Manrope", sans-serif;
+      font-size: 21px;
+      font-weight: 800;
+    }
+
+    .footer-logo span { color: #91a4ff; }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 22px;
+    }
+
+    .footer-links a {
+      color: #aeb8d0;
+      font-size: 13px;
+    }
+
+    .copyright {
+      margin: 0;
+      color: #77829c;
+      font-size: 12px;
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .container { width: min(100% - 36px, 560px); }
+      .nav-inner { min-height: 68px; gap: 12px; }
+      .logo { font-size: 22px; }
+      .nav-links { gap: 16px; }
+      .nav-links a { font-size: 12px; }
+      .nav-cta { display: none; }
+      .page-intro { padding: 43px 0 22px; }
+      main { padding: 22px 0 55px; }
+      .quiz-container {
+        width: calc(100% - 32px);
+        padding: 23px;
+      }
+      .options { grid-template-columns: 1fr; }
+      #student-form { grid-template-columns: 1fr; }
+      #student-form button { grid-column: auto; }
+      .footer-inner {
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
+      }
+      .footer-links { justify-content: center; }
+    }
+
+    @media (max-width: 380px) {
+      .container { width: calc(100% - 28px); }
+      .nav-links { gap: 10px; }
+      .nav-links a { font-size: 11px; }
+      .logo { font-size: 20px; }
+      .quiz-container {
+        width: calc(100% - 22px);
+        padding: 17px;
+      }
+      .actions { flex-direction: column; }
+      .actions .btn { width: 100%; }
+      .quiz-meta { font-size: 12px; }
+      #student-panel { padding: 17px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <header class="navbar">
+    <div class="container nav-inner">
+      <a href="index.html" class="logo">Learn<span>Check</span></a>
+
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="quiz.html" class="active" aria-current="page">Quiz</a>
+        <a href="results.html">Results</a>
+      </nav>
+
+      <a href="#student-panel" class="nav-cta">Start Quiz</a>
+    </div>
+  </header>
+
+  <!-- Introduction -->
+  <section class="page-intro">
+    <div class="container">
+      <div class="eyebrow">
+        <span class="eyebrow-dot"></span>
+        PERSONALIZED LEARNING
+      </div>
+
+      <h1>Put your knowledge to the <span>test.</span></h1>
+
+      <p>
+        Choose your subject and difficulty. LearnCheck will create
+        a quiz designed around your learning level.
+      </p>
+    </div>
+  </section>
+
+  <!-- Main quiz area -->
+  <main id="main">
+    <section class="quiz-container" aria-label="LearnCheck quiz">
+
+      <header class="quiz-header">
+        <h2 id="quiz-title">Your learning session</h2>
+        <p>Answer each question and review the explanation to learn as you go.</p>
+
+        <div class="quiz-meta">
+          <span id="progress-text">Ready to begin</span>
+          <span id="score-text">Score: 0</span>
+        </div>
+
+        <div class="progress"
+             role="progressbar"
+             aria-label="Quiz progress"
+             aria-valuemin="0"
+             aria-valuemax="100"
+             aria-valuenow="0">
+          <div id="progress-bar" class="progress-bar"></div>
+        </div>
+      </header>
+
+      <!-- Student details -->
+      <section id="student-panel">
+        <h2>Generate your quiz</h2>
+        <p class="form-description">
+          Tell us a little about yourself to personalize your questions.
+        </p>
+
+        <form id="student-form">
+
+          <div class="form-field">
+            <label for="student-name">Your name</label>
+            <input type="text" id="student-name"
+                   placeholder="Enter your name"
+                   autocomplete="name" required>
+          </div>
+
+          <div class="form-field">
+            <label for="student-age">Your age</label>
+            <input type="number" id="student-age"
+                   placeholder="Enter your age"
+                   min="5" max="100" required>
+          </div>
+
+          <div class="form-field">
+            <label for="student-gender">Gender</label>
+            <select id="student-gender" required>
+              <option value="">Select gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="student-field">Subject or topic</label>
+            <input type="text" id="student-field"
+                   placeholder="e.g. Python, Biology" required>
+          </div>
+
+          <div class="form-field">
+            <label for="student-difficulty">Difficulty level</label>
+            <select id="student-difficulty" required>
+              <option value="">Select difficulty</option>
+              <option value="Easy">Easy</option>
+              <option value="Medium">Medium</option>
+              <option value="Hard">Hard</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-primary">
+            Generate My Quiz →
+          </button>
+
+        </form>
+      </section>
+
+      <!-- Questions -->
+      <form id="quiz-form" novalidate hidden>
+        <fieldset class="question-answer">
+          <legend id="question">Loading question…</legend>
+          <div id="options" class="options"></div>
+        </fieldset>
+
+        <p id="message" class="message" role="alert" aria-live="polite"></p>
+
+        <div class="actions">
+          <button type="submit" id="submit-btn" class="btn btn-primary">
+            Check answer
+          </button>
+
+          <button type="button" id="next-btn" class="btn btn-secondary" hidden>
+            Next question
+          </button>
+        </div>
+      </form>
+
+      <!-- Error panel -->
+      <section id="error-panel" class="error-panel" hidden role="alert">
+        <h2>Couldn’t load the quiz</h2>
+        <p id="error-text"></p>
+        <button type="button" id="retry-btn" class="btn btn-primary">
+          Try again
+        </button>
+      </section>
+
+      <!-- Results panel -->
+      <section id="result-panel" class="result-panel" hidden aria-live="polite">
+        <h2>Quiz completed!</h2>
+        <p id="result-summary" class="result-summary"></p>
+
+        <div class="actions">
+          <button type="button" id="restart-btn" class="btn btn-primary">
+            Try again
+          </button>
+
+          <a class="btn btn-secondary" href="results.html">
+            View results
+          </a>
+        </div>
+      </section>
+
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-inner">
+      <a href="index.html" class="footer-logo">
+        Learn<span>Check</span>
+      </a>
+
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="quiz.html">Take a Quiz</a>
+        <a href="results.html">My Results</a>
+      </div>
+
+      <p class="copyright">
+        © <span id="year">2026</span> LearnCheck. All rights reserved.
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    'use strict';
+
+    // FastAPI backend URL
+    const API = "http://127.0.0.1:8000/quiz";
+
+    // Quiz data
+    let questions = [];
+    let currentQuestion = 0;
+    let score = 0;
+    let answered = false;
+
+    // Store student details for the current quiz
+    let studentData = {};
+
+    // DOM elements
+    const $ = (id) => document.getElementById(id);
+
+    const studentPanel = $('student-panel');
+    const studentForm = $('student-form');
+    const quizForm = $('quiz-form');
+
+    const questionElement = $('question');
+    const optionsElement = $('options');
+    const messageElement = $('message');
+
+    const submitBtn = $('submit-btn');
+    const nextBtn = $('next-btn');
+
+    const resultPanel = $('result-panel');
+    const resultSummary = $('result-summary');
+
+    const errorPanel = $('error-panel');
+    const errorText = $('error-text');
+    const retryBtn = $('retry-btn');
+
+    const progressText = $('progress-text');
+    const scoreText = $('score-text');
+    const progressBar = $('progress-bar');
+
+
+    // Generate quiz
+    studentForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      // Collect student details
+      studentData = {
+        name: $('student-name').value.trim(),
+        age: Number($('student-age').value),
+        gender: $('student-gender').value,
+        field: $('student-field').value.trim(),
+        difficulty: $('student-difficulty').value
+      };
+
+      const generateBtn = studentForm.querySelector('button');
+
+      generateBtn.disabled = true;
+      generateBtn.textContent = "Generating Quiz...";
+
+      errorPanel.hidden = true;
+
+      try {
+        const response = await fetch(API, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(studentData)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.detail || "Failed to generate quiz");
+        }
+
+        questions = data.questions;
+
+        if (!Array.isArray(questions) || questions.length === 0) {
+          throw new Error("No questions received from Gemini.");
+        }
+
+        currentQuestion = 0;
+        score = 0;
+
+        studentPanel.hidden = true;
+        errorPanel.hidden = true;
+
+        loadQuestion();
+
+      } catch (error) {
+        studentPanel.hidden = false;
+        errorPanel.hidden = false;
+        errorText.textContent = error.message;
+        console.error(error);
+
+      } finally {
+        generateBtn.disabled = false;
+        generateBtn.textContent = "Generate My Quiz →";
+      }
+    });
+
+
+    // Display question
+    function loadQuestion() {
+      if (currentQuestion >= questions.length) {
+        showResults();
+        return;
+      }
+
+      answered = false;
+
+      const q = questions[currentQuestion];
+
+      questionElement.textContent = q.question;
+      optionsElement.innerHTML = "";
+      optionsElement.classList.remove("locked");
+
+      Object.entries(q.options).forEach(([key, value]) => {
+
+        const label = document.createElement("label");
+        label.className = "option";
+        label.dataset.value = key;
+
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = "q";
+        input.value = key;
+
+        const span = document.createElement("span");
+        span.textContent = `${key}. ${value}`;
+
+        label.appendChild(input);
+        label.appendChild(span);
+
+        optionsElement.appendChild(label);
+      });
+
+      messageElement.textContent = "";
+      messageElement.className = "message";
+
+      submitBtn.hidden = false;
+      nextBtn.hidden = true;
+
+      progressText.textContent =
+        `Question ${currentQuestion + 1} of ${questions.length}`;
+
+      scoreText.textContent = `Score: ${score}`;
+
+      const percent = (currentQuestion / questions.length) * 100;
+
+      progressBar.style.width = `${percent}%`;
+      progressBar.parentElement.setAttribute("aria-valuenow", percent);
+
+      quizForm.hidden = false;
+      resultPanel.hidden = true;
+
+      const firstInput = optionsElement.querySelector("input");
+
+      if (firstInput) firstInput.focus();
+    }
+
+
+    // Get selected answer
+    function getSelectedValue() {
+      const selected = quizForm.querySelector('input[name="q"]:checked');
+
+      return selected ? selected.value : null;
+    }
+
+
+    // Check answer
+    quizForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      if (answered) return;
+
+      const selectedAnswer = getSelectedValue();
+
+      if (!selectedAnswer) {
+        messageElement.textContent = "Please select an answer first.";
+        messageElement.className = "message bad";
+        return;
+      }
+
+      const q = questions[currentQuestion];
+      const correct = selectedAnswer === q.correct_answer;
+
+      if (correct) score++;
+
+      answered = true;
+
+      // Lock options and highlight answers
+      optionsElement.classList.add("locked");
+
+      optionsElement.querySelectorAll(".option").forEach(label => {
+
+        const input = label.querySelector("input");
+        input.disabled = true;
+
+        if (label.dataset.value === q.correct_answer) {
+          label.classList.add("correct");
+        } else if (label.dataset.value === selectedAnswer) {
+          label.classList.add("wrong");
+        }
+      });
+
+      // Show explanation
+      messageElement.textContent =
+        (correct ? "Correct! " : "Incorrect. ") +
+        (q.explanation || "");
+
+      messageElement.className =
+        correct ? "message ok" : "message bad";
+
+      scoreText.textContent = `Score: ${score}`;
+
+      submitBtn.hidden = true;
+      nextBtn.hidden = false;
+
+      nextBtn.textContent =
+        currentQuestion === questions.length - 1
+          ? "See Results"
+          : "Next Question";
+    });
+
+
+    // Next question
+    nextBtn.addEventListener("click", function () {
+      currentQuestion++;
+      loadQuestion();
+    });
+
+
+    // Show final results and save them
+    function showResults() {
+      quizForm.hidden = true;
+      resultPanel.hidden = false;
+
+      const total = questions.length;
+      const percentage = Math.round((score / total) * 100);
+
+      progressText.textContent = "Quiz completed";
+      scoreText.textContent = `Score: ${score}`;
+
+      progressBar.style.width = "100%";
+      progressBar.parentElement.setAttribute("aria-valuenow", 100);
+
+      let verdict;
+
+      if (percentage >= 80) {
+        verdict = "Excellent work!";
+      } else if (percentage >= 50) {
+        verdict = "Good effort. Keep practising!";
+      } else {
+        verdict = "Keep learning and try again!";
+      }
+
+      resultSummary.textContent =
+        `Well done, ${studentData.name}! You scored ${score}/${total} (${percentage}%). ${verdict}`;
+
+
+      // Create result object
+      const result = {
+        name: studentData.name,
+        age: studentData.age,
+        gender: studentData.gender,
+        field: studentData.field,
+        difficulty: studentData.difficulty,
+        score: score,
+        total: total,
+        percentage: percentage,
+        date: new Date().toLocaleString()
+      };
+
+
+      // Get previous quiz history from localStorage
+      let history = [];
+
+      try {
+        history = JSON.parse(
+          localStorage.getItem("quizResults") || "[]"
+        );
+
+        if (!Array.isArray(history)) {
+          history = [];
+        }
+
+      } catch (error) {
+        console.error("Could not read quiz history:", error);
+        history = [];
+      }
+
+
+      // Add current result to history
+      history.push(result);
+
+
+      // Keep only the latest 20 results
+      history = history.slice(-20);
+
+
+      // Save updated history
+      localStorage.setItem(
+        "quizResults",
+        JSON.stringify(history)
+      );
+
+      console.log("Quiz result saved:", result);
+    }
+
+
+    // Restart quiz with same questions
+    $('restart-btn').addEventListener('click', function () {
+      currentQuestion = 0;
+      score = 0;
+      loadQuestion();
+    });
+
+
+    // Retry if quiz generation fails
+    retryBtn.addEventListener('click', function () {
+      errorPanel.hidden = true;
+      studentPanel.hidden = false;
+    });
+
+
+    // Update footer year
+    $('year').textContent = new Date().getFullYear();
+
+
+    // Initial state
+    quizForm.hidden = true;
+    resultPanel.hidden = true;
+    errorPanel.hidden = true;
+    studentPanel.hidden = false;
+
+  </script>
+
+</body>
+</html>
