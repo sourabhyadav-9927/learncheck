@@ -13,16 +13,13 @@ from google.genai.errors import APIError
 load_dotenv()
 
 app = FastAPI()
-
 ALLOWED_ORIGINS = [
-    o.strip() for o in os.getenv("ALLOWED_ORIGINS", "*").split(",") if o.strip()
+    "https://learncheck.pages.dev/",
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
-    # Also allows Cloudflare preview deployments (abc123.your-site.pages.dev)
-    allow_origin_regex=r"https://.*\.pages\.dev",
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +10,9 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
 
   <style>
     :root {
@@ -31,8 +34,13 @@
       --shadow: 0 20px 60px rgba(25, 38, 75, 0.08);
     }
 
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
       margin: 0;
@@ -45,9 +53,20 @@
       line-height: 1.6;
     }
 
-    button, input, select { font: inherit; }
-    a { color: inherit; text-decoration: none; }
-    [hidden] { display: none !important; }
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
 
     :focus-visible {
       outline: 3px solid var(--yellow);
@@ -66,7 +85,7 @@
       z-index: 100;
       color: white;
       background: var(--navy);
-      border-bottom: 1px solid rgba(255,255,255,.08);
+      border-bottom: 1px solid rgba(255, 255, 255, .08);
     }
 
     .nav-inner {
@@ -86,7 +105,9 @@
       white-space: nowrap;
     }
 
-    .logo span { color: #91a4ff; }
+    .logo span {
+      color: #91a4ff;
+    }
 
     .nav-links {
       display: flex;
@@ -101,7 +122,9 @@
     }
 
     .nav-links a:hover,
-    .nav-links a.active { color: white; }
+    .nav-links a.active {
+      color: white;
+    }
 
     .nav-cta {
       padding: 11px 21px;
@@ -112,14 +135,16 @@
       font-weight: 700;
     }
 
-    .nav-cta:hover { background: #5b78f0; }
+    .nav-cta:hover {
+      background: #5b78f0;
+    }
 
     /* Introduction */
     .page-intro {
       padding: 55px 0 25px;
       text-align: center;
       background:
-        radial-gradient(ellipse at 85% 15%, rgba(95,116,229,.13), transparent 35%),
+        radial-gradient(ellipse at 85% 15%, rgba(95, 116, 229, .13), transparent 35%),
         linear-gradient(115deg, #f9faff, #f0f2ff);
     }
 
@@ -130,8 +155,8 @@
       margin-bottom: 13px;
       padding: 7px 14px;
       color: var(--blue-dark);
-      background: rgba(70,102,232,.09);
-      border: 1px solid rgba(70,102,232,.13);
+      background: rgba(70, 102, 232, .09);
+      border: 1px solid rgba(70, 102, 232, .13);
       border-radius: 50px;
       font-size: 11px;
       font-weight: 800;
@@ -154,7 +179,9 @@
       letter-spacing: -1.8px;
     }
 
-    .page-intro h1 span { color: var(--blue); }
+    .page-intro h1 span {
+      color: var(--blue);
+    }
 
     .page-intro p {
       max-width: 580px;
@@ -180,7 +207,9 @@
     }
 
     /* Quiz header */
-    .quiz-header { margin-bottom: 28px; }
+    .quiz-header {
+      margin-bottom: 28px;
+    }
 
     .quiz-header h2 {
       margin: 0 0 5px;
@@ -189,7 +218,7 @@
       font-size: 21px;
     }
 
-    .quiz-header > p {
+    .quiz-header>p {
       margin: 0;
       color: var(--muted);
       font-size: 14px;
@@ -206,7 +235,9 @@
       font-weight: 700;
     }
 
-    #score-text { color: var(--blue); }
+    #score-text {
+      color: var(--blue);
+    }
 
     .progress {
       height: 8px;
@@ -282,10 +313,12 @@
     #student-form input:focus,
     #student-form select:focus {
       border-color: var(--blue);
-      box-shadow: 0 0 0 3px rgba(70,102,232,.12);
+      box-shadow: 0 0 0 3px rgba(70, 102, 232, .12);
     }
 
-    #student-form button { grid-column: 1 / -1; }
+    #student-form button {
+      grid-column: 1 / -1;
+    }
 
     /* Questions */
     .question-answer {
@@ -360,7 +393,9 @@
       border-color: #e59a9a;
     }
 
-    .options.locked .option { cursor: default; }
+    .options.locked .option {
+      cursor: default;
+    }
 
     /* Feedback */
     .message {
@@ -372,9 +407,19 @@
       line-height: 1.7;
     }
 
-    .message:empty { display: none; }
-    .message.ok { color: #12633a; background: var(--green-bg); }
-    .message.bad { color: #9f2929; background: var(--red-bg); }
+    .message:empty {
+      display: none;
+    }
+
+    .message.ok {
+      color: #12633a;
+      background: var(--green-bg);
+    }
+
+    .message.bad {
+      color: #9f2929;
+      background: var(--red-bg);
+    }
 
     /* Buttons */
     .actions {
@@ -399,9 +444,18 @@
       transition: .2s;
     }
 
-    .btn:hover:not(:disabled) { transform: translateY(-1px); }
-    .btn-primary { color: white; background: var(--blue); }
-    .btn-primary:hover:not(:disabled) { background: var(--blue-dark); }
+    .btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      color: white;
+      background: var(--blue);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--blue-dark);
+    }
 
     .btn-secondary {
       color: var(--navy);
@@ -445,7 +499,9 @@
       line-height: 1.8;
     }
 
-    .result-panel .actions { justify-content: center; }
+    .result-panel .actions {
+      justify-content: center;
+    }
 
     .error-panel {
       margin-top: 20px;
@@ -491,7 +547,9 @@
       font-weight: 800;
     }
 
-    .footer-logo span { color: #91a4ff; }
+    .footer-logo span {
+      color: #91a4ff;
+    }
 
     .footer-links {
       display: flex;
@@ -512,47 +570,114 @@
 
     /* Responsive */
     @media (max-width: 700px) {
-      .container { width: min(100% - 36px, 560px); }
-      .nav-inner { min-height: 68px; gap: 12px; }
-      .logo { font-size: 22px; }
-      .nav-links { gap: 16px; }
-      .nav-links a { font-size: 12px; }
-      .nav-cta { display: none; }
-      .page-intro { padding: 43px 0 22px; }
-      main { padding: 22px 0 55px; }
+      .container {
+        width: min(100% - 36px, 560px);
+      }
+
+      .nav-inner {
+        min-height: 68px;
+        gap: 12px;
+      }
+
+      .logo {
+        font-size: 22px;
+      }
+
+      .nav-links {
+        gap: 16px;
+      }
+
+      .nav-links a {
+        font-size: 12px;
+      }
+
+      .nav-cta {
+        display: none;
+      }
+
+      .page-intro {
+        padding: 43px 0 22px;
+      }
+
+      main {
+        padding: 22px 0 55px;
+      }
+
       .quiz-container {
         width: calc(100% - 32px);
         padding: 23px;
       }
-      .options { grid-template-columns: 1fr; }
-      #student-form { grid-template-columns: 1fr; }
-      #student-form button { grid-column: auto; }
+
+      .options {
+        grid-template-columns: 1fr;
+      }
+
+      #student-form {
+        grid-template-columns: 1fr;
+      }
+
+      #student-form button {
+        grid-column: auto;
+      }
+
       .footer-inner {
         justify-content: center;
         flex-direction: column;
         text-align: center;
       }
-      .footer-links { justify-content: center; }
+
+      .footer-links {
+        justify-content: center;
+      }
     }
 
     @media (max-width: 380px) {
-      .container { width: calc(100% - 28px); }
-      .nav-links { gap: 10px; }
-      .nav-links a { font-size: 11px; }
-      .logo { font-size: 20px; }
+      .container {
+        width: calc(100% - 28px);
+      }
+
+      .nav-links {
+        gap: 10px;
+      }
+
+      .nav-links a {
+        font-size: 11px;
+      }
+
+      .logo {
+        font-size: 20px;
+      }
+
       .quiz-container {
         width: calc(100% - 22px);
         padding: 17px;
       }
-      .actions { flex-direction: column; }
-      .actions .btn { width: 100%; }
-      .quiz-meta { font-size: 12px; }
-      #student-panel { padding: 17px; }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .actions .btn {
+        width: 100%;
+      }
+
+      .quiz-meta {
+        font-size: 12px;
+      }
+
+      #student-panel {
+        padding: 17px;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      *, *::before, *::after {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
         transition-duration: .01ms !important;
       }
     }
@@ -606,12 +731,8 @@
           <span id="score-text">Score: 0</span>
         </div>
 
-        <div class="progress"
-             role="progressbar"
-             aria-label="Quiz progress"
-             aria-valuemin="0"
-             aria-valuemax="100"
-             aria-valuenow="0">
+        <div class="progress" role="progressbar" aria-label="Quiz progress" aria-valuemin="0" aria-valuemax="100"
+          aria-valuenow="0">
           <div id="progress-bar" class="progress-bar"></div>
         </div>
       </header>
@@ -627,16 +748,12 @@
 
           <div class="form-field">
             <label for="student-name">Your name</label>
-            <input type="text" id="student-name"
-                   placeholder="Enter your name"
-                   autocomplete="name" required>
+            <input type="text" id="student-name" placeholder="Enter your name" autocomplete="name" required>
           </div>
 
           <div class="form-field">
             <label for="student-age">Your age</label>
-            <input type="number" id="student-age"
-                   placeholder="Enter your age"
-                   min="5" max="100" required>
+            <input type="number" id="student-age" placeholder="Enter your age" min="5" max="100" required>
           </div>
 
           <div class="form-field">
@@ -651,8 +768,7 @@
 
           <div class="form-field">
             <label for="student-field">Subject or topic</label>
-            <input type="text" id="student-field"
-                   placeholder="e.g. Python, Biology" required>
+            <input type="text" id="student-field" placeholder="e.g. Python, Biology" required>
           </div>
 
           <div class="form-field">
@@ -739,7 +855,358 @@
     </div>
   </footer>
 
-  <script src="quiz.js" type="module"></script>
+  <script>
+  'use strict';
+
+    // FastAPI backend (Render)
+    const API_BASE = "https://learncheck.onrender.com";
+    const API = `${API_BASE}/quiz`;
+
+    // Wake up the Render server as soon as the page loads (hides cold-start delay)
+    fetch(`${API_BASE}/`).catch(() => { });
+
+    // Quiz data
+    let questions = [];
+    let currentQuestion = 0;
+    let score = 0;
+    let answered = false;
+
+    // Student details for the current quiz
+    let studentData = {};
+
+    // DOM elements
+    const $ = (id) => document.getElementById(id);
+
+    const studentPanel = $('student-panel');
+    const studentForm = $('student-form');
+    const quizForm = $('quiz-form');
+
+    const questionElement = $('question');
+    const optionsElement = $('options');
+    const messageElement = $('message');
+
+    const submitBtn = $('submit-btn');
+    const nextBtn = $('next-btn');
+
+    const resultPanel = $('result-panel');
+    const resultSummary = $('result-summary');
+
+    const errorPanel = $('error-panel');
+    const errorText = $('error-text');
+    const retryBtn = $('retry-btn');
+
+    const progressText = $('progress-text');
+    const scoreText = $('score-text');
+    const progressBar = $('progress-bar');
+
+
+    // Generate quiz
+    studentForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      // Collect student details
+      studentData = {
+        name: $('student-name').value.trim(),
+        age: Number($('student-age').value),
+        gender: $('student-gender').value,
+        field: $('student-field').value.trim(),
+        difficulty: $('student-difficulty').value
+      };
+
+      // Basic validation before calling the server
+      if (!studentData.name || !studentData.field || !Number.isInteger(studentData.age)) {
+        errorPanel.hidden = false;
+        errorText.textContent = "Please fill in all fields with valid values.";
+        return;
+      }
+
+      const generateBtn = studentForm.querySelector('button');
+      generateBtn.disabled = true;
+      generateBtn.textContent = "Generating Quiz... (first load may take ~30s)";
+      errorPanel.hidden = true;
+
+      // Abort if the server takes too long
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 90000);
+
+      try {
+        let response;
+
+        try {
+          response = await fetch(API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(studentData),
+            signal: controller.signal
+          });
+        } catch (networkErr) {
+          throw new Error(
+            networkErr.name === "AbortError"
+              ? "The server took too long to respond. Please try again."
+              : "Can't reach the server. It may be waking up. Wait a few seconds and retry."
+          );
+        }
+
+        // The body may not be JSON (e.g. a Render 502 HTML page)
+        let data = null;
+        try {
+          data = await response.json();
+        } catch {
+          /* ignore */
+        }
+
+        if (!response.ok) {
+          const detail = data && data.detail;
+          const message =
+            typeof detail === "string"
+              ? detail
+              : Array.isArray(detail)
+                ? detail.map(d => d.msg).join(", ")
+                : `Server error (${response.status}). Please try again.`;
+          throw new Error(message);
+        }
+
+        questions = data && data.questions;
+
+        if (!Array.isArray(questions) || questions.length === 0) {
+          throw new Error("No questions were received. Please try again.");
+        }
+
+        currentQuestion = 0;
+        score = 0;
+
+        studentPanel.hidden = true;
+        errorPanel.hidden = true;
+
+        loadQuestion();
+
+      } catch (error) {
+        studentPanel.hidden = false;
+        errorPanel.hidden = false;
+        errorText.textContent = error.message;
+        console.error(error);
+
+      } finally {
+        clearTimeout(timeoutId);
+        generateBtn.disabled = false;
+        generateBtn.textContent = "Generate My Quiz →";
+      }
+    });
+
+
+    // Display question
+    function loadQuestion() {
+      if (currentQuestion >= questions.length) {
+        showResults();
+        return;
+      }
+
+      answered = false;
+
+      const q = questions[currentQuestion];
+
+      questionElement.textContent = q.question;
+      optionsElement.innerHTML = "";
+      optionsElement.classList.remove("locked");
+
+      Object.entries(q.options).forEach(([key, value]) => {
+        const label = document.createElement("label");
+        label.className = "option";
+        label.dataset.value = key;
+
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = "q";
+        input.value = key;
+
+        const span = document.createElement("span");
+        span.textContent = `${key}. ${value}`;
+
+        label.appendChild(input);
+        label.appendChild(span);
+
+        optionsElement.appendChild(label);
+      });
+
+      messageElement.textContent = "";
+      messageElement.className = "message";
+
+      submitBtn.hidden = false;
+      nextBtn.hidden = true;
+
+      progressText.textContent =
+        `Question ${currentQuestion + 1} of ${questions.length}`;
+
+      scoreText.textContent = `Score: ${score}`;
+
+      const percent = (currentQuestion / questions.length) * 100;
+
+      progressBar.style.width = `${percent}%`;
+      progressBar.parentElement.setAttribute("aria-valuenow", percent);
+
+      quizForm.hidden = false;
+      resultPanel.hidden = true;
+
+      const firstInput = optionsElement.querySelector("input");
+      if (firstInput) firstInput.focus();
+    }
+
+
+    // Get selected answer
+    function getSelectedValue() {
+      const selected = quizForm.querySelector('input[name="q"]:checked');
+      return selected ? selected.value : null;
+    }
+
+
+    // Check answer
+    quizForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      if (answered) return;
+
+      const selectedAnswer = getSelectedValue();
+
+      if (!selectedAnswer) {
+        messageElement.textContent = "Please select an answer first.";
+        messageElement.className = "message bad";
+        return;
+      }
+
+      const q = questions[currentQuestion];
+      const correct = selectedAnswer === q.correct_answer;
+
+      if (correct) score++;
+
+      answered = true;
+
+      // Lock options and highlight answers
+      optionsElement.classList.add("locked");
+
+      optionsElement.querySelectorAll(".option").forEach(label => {
+        const input = label.querySelector("input");
+        input.disabled = true;
+
+        if (label.dataset.value === q.correct_answer) {
+          label.classList.add("correct");
+        } else if (label.dataset.value === selectedAnswer) {
+          label.classList.add("wrong");
+        }
+      });
+
+      // Show explanation
+      messageElement.textContent =
+        (correct ? "Correct! " : "Incorrect. ") + (q.explanation || "");
+
+      messageElement.className = correct ? "message ok" : "message bad";
+
+      scoreText.textContent = `Score: ${score}`;
+
+      submitBtn.hidden = true;
+      nextBtn.hidden = false;
+
+      nextBtn.textContent =
+        currentQuestion === questions.length - 1
+          ? "See Results"
+          : "Next Question";
+    });
+
+
+    // Next question
+    nextBtn.addEventListener("click", function () {
+      currentQuestion++;
+      loadQuestion();
+    });
+
+
+    // Show final results and save them
+    function showResults() {
+      quizForm.hidden = true;
+      resultPanel.hidden = false;
+
+      const total = questions.length;
+      const percentage = Math.round((score / total) * 100);
+
+      progressText.textContent = "Quiz completed";
+      scoreText.textContent = `Score: ${score}`;
+
+      progressBar.style.width = "100%";
+      progressBar.parentElement.setAttribute("aria-valuenow", 100);
+
+      let verdict;
+
+      if (percentage >= 80) {
+        verdict = "Excellent work!";
+      } else if (percentage >= 50) {
+        verdict = "Good effort. Keep practising!";
+      } else {
+        verdict = "Keep learning and try again!";
+      }
+
+      resultSummary.textContent =
+        `Well done, ${studentData.name}! You scored ${score}/${total} (${percentage}%). ${verdict}`;
+
+      // Create result object
+      const result = {
+        name: studentData.name,
+        age: studentData.age,
+        gender: studentData.gender,
+        field: studentData.field,
+        difficulty: studentData.difficulty,
+        score: score,
+        total: total,
+        percentage: percentage,
+        date: new Date().toLocaleString()
+      };
+
+      // Save to localStorage (guarded: storage can be blocked or full)
+      try {
+        let history = JSON.parse(localStorage.getItem("quizResults") || "[]");
+
+        if (!Array.isArray(history)) {
+          history = [];
+        }
+
+        history.push(result);
+
+        // Keep only the latest 20 results
+        history = history.slice(-20);
+
+        localStorage.setItem("quizResults", JSON.stringify(history));
+        console.log("Quiz result saved:", result);
+
+      } catch (error) {
+        console.error("Could not save quiz history:", error);
+      }
+    }
+
+
+    // Restart quiz with same questions
+    $('restart-btn').addEventListener('click', function () {
+      currentQuestion = 0;
+      score = 0;
+      loadQuestion();
+    });
+
+
+    // Retry if quiz generation fails
+    retryBtn.addEventListener('click', function () {
+      errorPanel.hidden = true;
+      studentPanel.hidden = false;
+    });
+
+
+    // Update footer year
+    $('year').textContent = new Date().getFullYear();
+
+
+    // Initial state
+    quizForm.hidden = true;
+    resultPanel.hidden = true;
+    errorPanel.hidden = true;
+    studentPanel.hidden = false;
+    </script>
 
 </body>
+
 </html>
