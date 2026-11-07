@@ -13,13 +13,11 @@ from google.genai.errors import APIError
 load_dotenv()
 
 app = FastAPI()
-ALLOWED_ORIGINS = [
-    "https://learncheck.pages.dev/",
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,
+    allow_origins=[
+        "https://learncheck.pages.dev"
+    ],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
