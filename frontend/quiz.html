@@ -939,6 +939,9 @@
             body: JSON.stringify(studentData),
             signal: controller.signal
           });
+          console.log("Backend response status:", response.status);
+        const data = await response.json();
+        console.log("Backend response data:", data);
         } catch (networkErr) {
           throw new Error(
             networkErr.name === "AbortError"
