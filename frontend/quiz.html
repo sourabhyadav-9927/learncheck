@@ -780,6 +780,10 @@
               <option value="Hard">Hard</option>
             </select>
           </div>
+           <div class="form-field">
+            <label for="noOfQuestions">Number of Questions</label>
+            <input type="number" id="noOfQuestions" placeholder="from 1 to 20" min="1" max="20" required>
+          </div>
 
           <button type="submit" class="btn btn-primary">
             Generate My Quiz →
@@ -919,7 +923,8 @@ studentForm.addEventListener('submit', async function (e) {
         age: Number($('student-age').value),
         gender: $('student-gender').value,
         field: $('student-field').value.trim(),
-        difficulty: $('student-difficulty').value
+        difficulty: $('student-difficulty').value,
+        noOfQuestions: Number($('noOfQuestions').value)
     };
 
     if (
@@ -927,7 +932,8 @@ studentForm.addEventListener('submit', async function (e) {
         !studentData.field ||
         !Number.isInteger(studentData.age) ||
         studentData.age < 5 ||
-        studentData.age > 100
+        studentData.age > 100 ||
+        noOfQuestions < 1 || noOfQuestions > 20
     ) {
         errorPanel.hidden = false;
         errorText.textContent = "Please enter valid details in all fields.";
@@ -1263,9 +1269,32 @@ function showResults() {
 
     if (percentage >= 80) {
         verdict = "Excellent work!";
-    } else if (percentage >= 50) {
+    } 
+    else if (percentage >= 80 && studentData.gender === "Male") {
+        verdict = "You are a genius, bro! Keep it up!";
+    }
+    else if (percentage >= 80 && studentData.gender === "Female"){
+        verdict = "You are a genius, diva!, you are such a Queen! Keep it up!";
+    }
+    else if (percentage >= 50) {
         verdict = "Good effort. Keep practising!";
-    } else {
+    } 
+    else if (percentage >= 50 && studentData.gender === "Male") {
+        verdict = "Don't go, chimpanzee! You can't do this ,by scoring this less!";
+    } 
+    else if (studentData.gender === "Female" && percentage >= 50) {
+        verdict = "Go gurl ! You can do it!";
+    } 
+    else if (percentage < 50 && studentData.gender === "Female"){
+        verdict = "Hey, diva! You can do it!";
+    }
+    else if (percentage < 50 && studentData.gender === "Male"){
+        verdict = "Hey, bro! can't you give up! Don't damn dare to try again!";
+    } 
+    else if (percentage < 50){
+        verdict = "you can do it! Don't give up!";
+    }
+    else {
         verdict = "Keep learning and try again!";
     }
 
@@ -1278,6 +1307,7 @@ function showResults() {
         gender: studentData.gender,
         field: studentData.field,
         difficulty: studentData.difficulty,
+        noOfQuestions: studentData.noOfQuestions,
         score: score,
         total: total,
         percentage: percentage,

@@ -37,6 +37,7 @@ class QuizRequest(BaseModel):
     gender: str
     field: str = Field(min_length=1, max_length=100)
     difficulty: str
+    noOfQuestions: int = Field(ge=1, le=20)
 
 
 @app.get("/")
@@ -55,9 +56,10 @@ Age: {qa.age}
 Gender: {qa.gender}
 Subject/Field: {qa.field}
 Difficulty: {qa.difficulty}
+Number of Questions: {qa.noOfQuestions}
 
 YOUR TASK:
-Generate exactly 10 unique multiple-choice quiz questions.
+Generate exactly {qa.noOfQuestions} unique multiple-choice quiz questions.
 
 RULES:
 1. All questions must be related to {qa.field}.
